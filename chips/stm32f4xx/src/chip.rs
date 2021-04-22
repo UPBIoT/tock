@@ -29,6 +29,7 @@ pub struct Stm32f4xxDefaultPeripherals<'a> {
     pub usart3: crate::usart::Usart<'a>,
     pub gpio_ports: crate::gpio::GpioPorts<'a>,
     pub fsmc: crate::fsmc::Fsmc<'a>,
+    pub can1: crate::can::Can<'a>,
 }
 
 impl<'a> Stm32f4xxDefaultPeripherals<'a> {
@@ -64,6 +65,7 @@ impl<'a> Stm32f4xxDefaultPeripherals<'a> {
                 ],
                 rcc,
             ),
+            can1: crate::can::Can::new(rcc), 
         }
     }
 
@@ -98,6 +100,11 @@ impl<'a> InterruptService<DeferredCallTask> for Stm32f4xxDefaultPeripherals<'a> 
             nvic::USART3 => self.usart3.handle_interrupt(),
 
             nvic::ADC => self.adc1.handle_interrupt(),
+
+            nvic::CAN1_TX => self.can1.handle_transmit_interrupt(),
+            nvic::CAN1_RX0 => self.can1.handle_fifo0_interrupt(),
+            nvic::CAN1_RX1 => self.can1.handle_fifo1_interrupt(),
+            nvic::CAN1_SCE => self.can1.handle_error_status_interrupt(),
 
             nvic::I2C1_EV => self.i2c1.handle_event(),
             nvic::I2C1_ER => self.i2c1.handle_error(),

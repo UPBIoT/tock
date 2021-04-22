@@ -3,6 +3,7 @@ use core::panic::PanicInfo;
 
 use cortexm4;
 
+use cortex_m_semihosting::hprint;
 use kernel::debug;
 use kernel::debug::IoWrite;
 use kernel::hil::led;
@@ -40,23 +41,24 @@ impl Write for Writer {
 
 impl IoWrite for Writer {
     fn write(&mut self, buf: &[u8]) {
-        let rcc = stm32f412g::rcc::Rcc::new();
-        let uart = stm32f412g::usart::Usart::new_usart2(&rcc);
+        // let rcc = stm32f412g::rcc::Rcc::new();
+        // let uart = stm32f412g::usart::Usart::new_usart2(&rcc);
 
-        if !self.initialized {
-            self.initialized = true;
+        // if !self.initialized {
+        //     self.initialized = true;
 
-            uart.configure(uart::Parameters {
-                baud_rate: 115200,
-                stop_bits: uart::StopBits::One,
-                parity: uart::Parity::None,
-                hw_flow_control: false,
-                width: uart::Width::Eight,
-            });
-        }
+        //     uart.configure(uart::Parameters {
+        //         baud_rate: 115200,
+        //         stop_bits: uart::StopBits::One,
+        //         parity: uart::Parity::None,
+        //         hw_flow_control: false,
+        //         width: uart::Width::Eight,
+        //     });
+        // }
 
         for &c in buf {
-            uart.send_byte(c);
+            // uart.send_byte(c);
+            hprint!("{}", c as char).unwrap();
         }
     }
 }

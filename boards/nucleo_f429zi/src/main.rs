@@ -10,6 +10,7 @@
 
 use capsules::virtual_alarm::VirtualMuxAlarm;
 use components::gpio::GpioComponent;
+use cortex_m_semihosting::hprintln;
 use kernel::capabilities;
 use kernel::common::dynamic_deferred_call::{DynamicDeferredCall, DynamicDeferredCallClientState};
 use kernel::component::Component;
@@ -200,6 +201,8 @@ unsafe fn set_pin_primary_functions(
     gpio_ports.get_pin(PinId::PF10).map(|pin| {
         pin.set_mode(stm32f429zi::gpio::Mode::AnalogMode);
     });
+
+    // hprintln!("izzz workin").unwrap();
 }
 
 /// Helper function for miscellaneous peripheral functions

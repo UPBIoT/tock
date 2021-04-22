@@ -13,6 +13,7 @@ pub mod nvic;
 
 // Peripherals
 pub mod adc;
+pub mod can;
 pub mod dbg;
 pub mod deferred_calls;
 pub mod dma1;

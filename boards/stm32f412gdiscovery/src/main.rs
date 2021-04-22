@@ -10,6 +10,7 @@
 use capsules::virtual_alarm::VirtualMuxAlarm;
 use components::gpio::GpioComponent;
 use components::rng::RngComponent;
+use cortex_m_semihosting::hprintln;
 use kernel::capabilities;
 use kernel::common::dynamic_deferred_call::{DynamicDeferredCall, DynamicDeferredCallClientState};
 use kernel::component::Component;
@@ -121,6 +122,7 @@ unsafe fn set_pin_primary_functions(
     exti: &stm32f412g::exti::Exti,
     i2c1: &stm32f412g::i2c::I2C,
     gpio_ports: &'static stm32f412g::gpio::GpioPorts<'static>,
+    can1: &'static stm32f412g::can::Can<'static>,
 ) {
     use kernel::hil::gpio::Configure;
     use stm32f412g::exti::LineId;
@@ -334,6 +336,15 @@ unsafe fn set_pin_primary_functions(
     gpio_ports.get_pin(PinId::PG04).map(|pin| {
         pin.make_input();
     });
+
+    // panic! ("got here\n");
+    // CAN
+    // hprintln!("in main, inainte de enable stuff for can").unwrap();
+    // hprintln!("in main, inainte de enable stuff for can").unwrap();
+    can1.enable_clock();
+    can1.enable();
+    can1.config_filter(0, true, true, true, true);
+    // can1.enter_normal_mode();
 }
 
 /// Helper function for miscellaneous peripheral functions
@@ -380,6 +391,8 @@ pub unsafe fn reset_handler() {
     );
     peripherals.init();
     let base_peripherals = &peripherals.stm32f4;
+    base_peripherals.usart2.enable_clock();
+    
     setup_peripherals(
         &base_peripherals.tim2,
         &base_peripherals.fsmc,
@@ -392,6 +405,7 @@ pub unsafe fn reset_handler() {
         &base_peripherals.exti,
         &base_peripherals.i2c1,
         &base_peripherals.gpio_ports,
+        &base_peripherals.can1,
     );
 
     setup_dma(
@@ -419,7 +433,7 @@ pub unsafe fn reset_handler() {
     // UART
 
     // Create a shared UART channel for kernel debug.
-    base_peripherals.usart2.enable_clock();
+    
     let uart_mux = components::console::UartMuxComponent::new(
         &base_peripherals.usart2,
         115200,
@@ -739,7 +753,7 @@ pub unsafe fn reset_handler() {
     // base_peripherals.fsmc.write(0x04, 120);
     // debug!("id {}", base_peripherals.fsmc.read(0x05));
 
-    debug!("Initialization complete. Entering main loop");
+    debug!("Initialization complete. Entering main loop 22");
 
     extern "C" {
         /// Beginning of the ROM region containing app images.

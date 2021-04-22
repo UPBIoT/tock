@@ -9,3 +9,4 @@ cortexm4 = { path = "../../arch/cortex-m4" }
 enum_primitive = { path = "../../libraries/enum_primitive" }
 kernel = { path = "../../kernel" }
 tock-rt0 = { path = "../../libraries/tock-rt0" }
+cortex-m-semihosting = "0.3.7"
